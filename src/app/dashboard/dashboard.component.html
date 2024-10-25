@@ -1,0 +1,49 @@
+<div class="dashboard-title">
+  <h1>DASHBOARD</h1>
+  <h1>{{ selectedDevice }}</h1>
+
+  <div class="periods-container">
+    <div
+      (click)="updateTime('Today')"
+      class="period"
+      [ngClass]="{ 'selected-period': selectedTime === 'Today' }"
+    >
+      <h3>Today</h3>
+    </div>
+    <div
+      (click)="updateTime('This week')"
+      class="period"
+      [ngClass]="{ 'selected-period': selectedTime === 'This week' }"
+    >
+      <h3>This week</h3>
+    </div>
+    <div
+      (click)="updateTime('This month')"
+      class="period"
+      [ngClass]="{ 'selected-period': selectedTime === 'This month' }"
+    >
+      <h3>This month</h3>
+    </div>
+  </div>
+
+  <div class="stats-list">
+    @for(data of datas; track data){
+    <div
+      class="stat-element"
+      (click)="updateData(data)"
+      [ngClass]="{
+        'stat-element-selected': selectedData === data
+      }"
+    >
+      <h3><fa-icon [icon]="faShoePrints" /> {{ data }}</h3>
+    </div>
+    }
+  </div>
+</div>
+
+<div>
+  <div class="chart">
+    <h3 style="margin-top: 20px">{{ selectedData }} : {{ selectedTime }}</h3>
+    <figure id="bar"></figure>
+  </div>
+</div>

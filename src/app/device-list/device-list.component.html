@@ -1,0 +1,12 @@
+<div class="device-list-title">
+  <h1>DEVICES LIST</h1>
+</div>
+<div>
+  @for(device of devices; track device.deviceName){
+  <app-device
+    [device]="device"
+    [currentDevice]="selectedDevice"
+    (selectedDevice)="updateSelectedDevice($event)"
+  />
+  }
+</div>

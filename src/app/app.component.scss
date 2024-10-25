@@ -1,0 +1,40 @@
+.body-container {
+  display: flex;
+  justify-content: space-around;
+  padding-top: 10px;
+  background-color: #2c345e;
+  background-image: url("/background.jpg");
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+}
+
+.two-block {
+  //border: solid 1px lightgrey;
+  border-radius: 20px;
+  background-color: rgba(0, 0, 0, 0);
+  color: white;
+  padding-top: 20px;
+  margin-bottom: 20px;
+}
+
+.device-list-bloc {
+  width: 40%;
+  text-align: center;
+}
+
+.dashboard-bloc {
+  width: 50%;
+  text-align: center;
+}
+
+@media (max-width: 800px) {
+  .body-container {
+    flex-direction: column;
+  }
+
+  .two-block {
+    width: 80%;
+    margin: auto;
+  }
+}
