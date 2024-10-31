@@ -12,18 +12,18 @@ import { DevicesService } from '../services/devices.service';
 })
 export class DeviceListComponent implements OnInit {
   devices!: Device[];
-  selectedDevice!: string;
+  selectedDevice!: Device;
 
   constructor(private devicesService: DevicesService) {}
 
   ngOnInit(): void {
-    this.devices = this.devicesService.getDevices();
+    this.devices = this.devicesService.getDevicesFromAPI();
     this.devicesService.getSelectedDevice().subscribe((selectedDevice) => {
       this.selectedDevice = selectedDevice;
     });
   }
 
-  updateSelectedDevice(newDevice: string) {
+  updateSelectedDevice(newDevice: Device) {
     this.devicesService.setSelectedDevice(newDevice);
   }
 }

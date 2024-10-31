@@ -7,16 +7,20 @@ import {
   faTemperatureLow,
   faWind,
   faPersonRunning,
+  IconDefinition,
 } from '@fortawesome/free-solid-svg-icons';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Injectable({ providedIn: 'root' })
 export class DevicesService {
-  private selectedDevice = new BehaviorSubject<string>('SportWatch');
-  private selectedTime: string = 'Today';
+  private selectedDevice = new BehaviorSubject<Device>(
+    new Device(1, 'Garmin Forerunner 255', 'SmartWatch', faPersonRunning)
+  );
+  private selectedTime: string = 'today';
   private selectedData: string = 'Number of steps';
 
-  getSelectedDevice(): Observable<string> {
+  getSelectedDevice(): Observable<Device> {
     return this.selectedDevice.asObservable();
   }
 
@@ -28,7 +32,7 @@ export class DevicesService {
     return this.selectedData;
   }
 
-  setSelectedDevice(newDevice: string) {
+  setSelectedDevice(newDevice: Device) {
     this.selectedDevice.next(newDevice);
   }
 
@@ -40,42 +44,52 @@ export class DevicesService {
     this.selectedData = newData;
   }
 
-  private datas: { [key: string]: string[] } = {
-    SportWatch: [
-      'Number of steps',
-      'Calories burned',
-      'Heart rate',
-      'Remaining battery',
-    ],
-    'Security camera': ['Test'],
-  };
+  getDevicesFromAPI(): Device[] {
+    var devices: Device[] = [];
+    var icons: { [key: string]: IconDefinition } = {
+      SportWatch: faPersonRunning,
+      SmartWatch: faClock,
+      'Security camera': faVideo,
+      'Smart Lightbulb': faLightbulb,
+      'Temperature sensor': faTemperatureLow,
+      'Air quality sensor': faWind,
+    };
 
-  private devices: Device[] = [
-    new Device('Apple Watch', 'SmartWatch', faClock),
-    new Device('FitBit', 'SportWatch', faPersonRunning),
-    new Device('ikvision DS-2CD2343G0', 'Security camera', faVideo),
-    new Device('Phillips Hue', 'Smart Lightbulb', faLightbulb),
-    new Device(
-      'Netatmo Weather Station',
-      'Temperature sensor',
-      faTemperatureLow
-    ),
-    new Device(
-      'Xiaomi Mijia Air Quality Monitor',
-      'Air quality sensor',
-      faWind
-    ),
-  ];
+    fetch('http://localhost:8001/getAllDevices')
+      .then((response) => response.json())
+      .then((datas) => {
+        datas.forEach(
+          (device: { _id: number; deviceName: string; deviceType: string }) => {
+            devices.push(
+              new Device(
+                device._id,
+                device.deviceName,
+                device.deviceType,
+                icons[device.deviceType]
+              )
+            );
+          }
+        );
+      });
 
-  getDatas(): {} {
-    return this.datas;
+    return devices;
   }
 
-  getDatasByType(type: string): string[] {
-    return this.datas[type];
+  async getAllDatasByDeviceAndTime(device: Device, time: string) {
+    const response = await fetch(
+      `http://localhost:8001/getAllDatasByDeviceAndTime/${device.deviceId}/${time}`
+    );
+
+    const datas = await response.json();
+    return datas;
   }
 
-  getDevices(): Device[] {
-    return this.devices;
+  async getChartDataFromAPI(device: Device, data: string, time: string) {
+    const response = await fetch(
+      `http://localhost:8001/getSpecificDataByDeviceAndTime/${device.deviceId}/${data}/${time}`
+    );
+
+    const datas = await response.json();
+    return datas;
   }
 }

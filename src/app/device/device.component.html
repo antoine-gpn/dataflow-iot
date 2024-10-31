@@ -1,7 +1,9 @@
 <div
   class="device-bloc"
-  (click)="updateSelectedDevice(device.deviceType)"
-  [ngClass]="{ 'selected-device': currentDevice === device.deviceType }"
+  (click)="updateSelectedDevice(device)"
+  [ngClass]="{
+    'selected-device': currentDevice.deviceName === device.deviceName
+  }"
 >
   <div class="icon">
     <fa-icon [icon]="device.icon"></fa-icon>

@@ -13,12 +13,12 @@ import { DevicesService } from '../services/devices.service';
 })
 export class DeviceComponent {
   @Input() device!: Device;
-  @Input() currentDevice!: string;
-  @Output() selectedDevice = new EventEmitter<string>();
+  @Input() currentDevice!: Device;
+  @Output() selectedDevice = new EventEmitter<Device>();
 
   constructor(private devicesService: DevicesService) {}
 
-  updateSelectedDevice(newDevice: string) {
+  updateSelectedDevice(newDevice: Device) {
     this.selectedDevice.emit(newDevice);
   }
 }
