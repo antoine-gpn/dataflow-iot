@@ -19,6 +19,8 @@ export class DevicesService {
   );
   private selectedTime: string = 'today';
   private selectedData: string = 'Number of steps';
+  //private baseUrl = 'http://localhost:8001/';
+  private baseUrl = 'https://dataflow-iot.onrender.com/';
 
   getSelectedDevice(): Observable<Device> {
     return this.selectedDevice.asObservable();
@@ -55,7 +57,7 @@ export class DevicesService {
       'Air quality sensor': faWind,
     };
 
-    fetch('http://localhost:8001/getAllDevices')
+    fetch(`${this.baseUrl}getAllDevices`)
       .then((response) => response.json())
       .then((datas) => {
         datas.forEach(
@@ -77,7 +79,7 @@ export class DevicesService {
 
   async getAllDatasByDeviceAndTime(device: Device, time: string) {
     const response = await fetch(
-      `http://localhost:8001/getAllDatasByDeviceAndTime/${device.deviceId}/${time}`
+      `${this.baseUrl}getAllDatasByDeviceAndTime/${device.deviceId}/${time}`
     );
 
     const datas = await response.json();
@@ -86,7 +88,7 @@ export class DevicesService {
 
   async getChartDataFromAPI(device: Device, data: string, time: string) {
     const response = await fetch(
-      `http://localhost:8001/getSpecificDataByDeviceAndTime/${device.deviceId}/${data}/${time}`
+      `${this.baseUrl}getSpecificDataByDeviceAndTime/${device.deviceId}/${data}/${time}`
     );
 
     const datas = await response.json();
