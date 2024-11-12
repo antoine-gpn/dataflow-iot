@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Device } from '../models/device';
 import {
-  faVideo,
   faClock,
   faLightbulb,
   faTemperatureLow,
   faWind,
   faPersonRunning,
+  faWeightScale,
   IconDefinition,
 } from '@fortawesome/free-solid-svg-icons';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -49,7 +49,7 @@ export class DevicesService {
     var icons: { [key: string]: IconDefinition } = {
       SportWatch: faPersonRunning,
       SmartWatch: faClock,
-      'Security camera': faVideo,
+      'Smart Balance': faWeightScale,
       'Smart Lightbulb': faLightbulb,
       'Temperature sensor': faTemperatureLow,
       'Air quality sensor': faWind,

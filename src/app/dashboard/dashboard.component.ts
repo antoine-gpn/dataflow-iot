@@ -1,5 +1,12 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { NgClass, TitleCasePipe, UpperCasePipe } from '@angular/common';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
+import { NgClass, UpperCasePipe } from '@angular/common';
 import { DevicesService } from '../services/devices.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
@@ -7,6 +14,24 @@ import {
   faBatteryThreeQuarters,
   faFire,
   faHeartPulse,
+  IconDefinition,
+  faDollarSign,
+  faBolt,
+  faStairs,
+  faPersonWalking,
+  faVirus,
+  faAtom,
+  faLungs,
+  faTemperatureLow,
+  faSun,
+  faDroplet,
+  faPlugCircleBolt,
+  faPowerOff,
+  faDumbbell,
+  faPersonCircleQuestion,
+  faCalculator,
+  faScaleUnbalanced,
+  faBurger,
 } from '@fortawesome/free-solid-svg-icons';
 import * as d3 from 'd3';
 import { Device } from '../models/device';
@@ -14,32 +39,51 @@ import { Device } from '../models/device';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [NgClass, FontAwesomeModule, TitleCasePipe],
+  imports: [NgClass, FontAwesomeModule, UpperCasePipe],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit, OnDestroy {
   selectedDevice!: Device;
   selectedTime!: string;
   selectedData!: string;
   datas!: any[];
-
   chartData!: {}[];
   chartExist: boolean = false;
   private svg: any;
   private margin = 50;
-  private width = 500;
-  private height = 300;
+  private width!: number;
+  private height = 400;
 
-  // FontAwesomeIcon
-  faBatteryThreeQuarters = faBatteryThreeQuarters;
-  faShoePrints = faShoePrints;
-  faHeartPulse = faHeartPulse;
-  faFire = faFire;
+  icons: { [key: string]: IconDefinition } = {
+    'Steps walked': faShoePrints,
+    'Calories burned': faFire,
+    'Heart-rate average': faHeartPulse,
+    'Remaining battery': faBatteryThreeQuarters,
+    'Estimated costs': faDollarSign,
+    'Consumption history': faBolt,
+    'Distance traveled': faPersonWalking,
+    'Floors climbed': faStairs,
+    'Air Quality Index': faLungs,
+    'Fine particle levels': faVirus,
+    'Oxygen Concentration': faAtom,
+    'Average temperature': faTemperatureLow,
+    'Sunshine exposure': faSun,
+    'Average humidity': faDroplet,
+    'Lightning intensity': faPlugCircleBolt,
+    'Time on': faPowerOff,
+    'Muscle rate': faDumbbell,
+    'Body Age': faPersonCircleQuestion,
+    'Body Water rate': faDroplet,
+    'Body Weight': faScaleUnbalanced,
+    'Bodyfat rate': faBurger,
+    'Body Mass Index': faCalculator,
+  };
 
   constructor(private devicesService: DevicesService) {}
 
   ngOnInit(): void {
+    window.addEventListener('resize', this.onResize.bind(this));
     this.selectedTime = this.devicesService.getSelectedTime();
     this.selectedData = this.devicesService.getSelectedData();
     this.devicesService
@@ -71,6 +115,10 @@ export class DashboardComponent {
         }
         this.chartExist = true;
       });
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('resize', this.onResize.bind(this));
   }
 
   async updateData(newData: string) {
@@ -105,11 +153,18 @@ export class DashboardComponent {
   }
 
   createSvg(): void {
+    const element = document.querySelector('.chart') as HTMLElement;
+    this.width = element.clientWidth - this.margin * 2;
+    this.height = element.clientHeight - this.margin * 2;
+
     this.svg = d3
       .select('figure#bar')
       .append('svg')
-      .attr('width', this.width + this.margin * 2)
-      .attr('height', this.height + this.margin * 2)
+      .attr(
+        'viewBox',
+        `0 0 ${this.width + this.margin * 2} ${this.height + this.margin * 2}`
+      )
+      .attr('preserveAspectRatio', 'xMinYMin meet')
       .append('g')
       .attr('transform', 'translate(' + this.margin + ',' + this.margin + ')');
   }
@@ -121,7 +176,10 @@ export class DashboardComponent {
       .domain(data.map((d) => d.Time))
       .padding(0.2);
 
-    const y = d3.scaleLinear().domain([0, 200]).range([this.height, 0]);
+    const y = d3
+      .scaleLinear()
+      .domain([0, d3.max(data, (d: any) => d.Value) as number])
+      .range([this.height, 0]);
 
     this.svg
       .append('g')
@@ -143,7 +201,7 @@ export class DashboardComponent {
       .attr('y', (d: any) => y(d.Value))
       .attr('width', x.bandwidth())
       .attr('height', (d: any) => this.height - y(d.Value))
-      .attr('fill', '#394899');
+      .attr('fill', '#1d2f7c');
   }
 
   updateChartWithNewData(): void {
@@ -173,7 +231,7 @@ export class DashboardComponent {
 
     this.svg.select('.y-axis').transition().duration(750).call(d3.axisLeft(y));
 
-    const bars = this.svg.selectAll('rect').data(newData);
+    const bars = this.svg.selectAll('rect').data(this.chartData);
 
     bars
       .transition()
@@ -182,7 +240,7 @@ export class DashboardComponent {
       .attr('y', (d: any) => y(d.Value))
       .attr('width', x.bandwidth())
       .attr('height', (d: any) => this.height - y(d.Value))
-      .attr('fill', '#394899');
+      .attr('fill', '#1d2f7c');
 
     bars
       .enter()
@@ -191,12 +249,20 @@ export class DashboardComponent {
       .attr('y', this.height)
       .attr('width', x.bandwidth())
       .attr('height', 0)
-      .attr('fill', '#394899')
+      .attr('fill', '#1d2f7c')
       .transition()
       .duration(750)
       .attr('y', (d: any) => y(d.Value))
       .attr('height', (d: any) => this.height - y(d.Value));
 
     bars.exit().remove();
+  }
+
+  onResize(): void {
+    const element = document.querySelector('.chart') as HTMLElement;
+    this.width = element.clientWidth - this.margin * 2;
+    d3.select('figure#bar svg').remove();
+    this.createSvg();
+    this.drawBars(this.chartData);
   }
 }

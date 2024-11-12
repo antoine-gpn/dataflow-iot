@@ -1,53 +1,55 @@
 <div class="dashboard-title">
-  <h2>{{ selectedDevice.deviceName }}</h2>
-  <h2>{{ selectedDevice.deviceType }}</h2>
-
-  <div class="periods-container">
-    <div
-      (click)="updateTime('today')"
-      class="period"
-      [ngClass]="{ 'selected-period': selectedTime === 'today' }"
-    >
-      <h3>Today</h3>
-    </div>
-    <div
-      (click)="updateTime('week')"
-      class="period"
-      [ngClass]="{ 'selected-period': selectedTime === 'week' }"
-    >
-      <h3>This week</h3>
-    </div>
-    <div
-      (click)="updateTime('month')"
-      class="period"
-      [ngClass]="{ 'selected-period': selectedTime === 'month' }"
-    >
-      <h3>This month</h3>
-    </div>
+  <div class="dashboard-head">
+    <h1>{{ selectedDevice.deviceName | uppercase }}</h1>
+    <h1>{{ selectedDevice.deviceType | uppercase }}</h1>
   </div>
 
-  <div class="stats-list">
-    @for(data of datas; track data){ @if(data[0] !== "date" && data[0] !== "_id"
-    && data[0] !== "device_id"){
-    <div
-      class="stat-element"
-      (click)="updateData(data[0])"
-      [ngClass]="{
-        'stat-element-selected': selectedData === data[0]
-      }"
-    >
-      <h3><fa-icon [icon]="faShoePrints" /> {{ data[0] }}</h3>
-      <h3>{{ data[1] }}</h3>
+  <div class="dashboard-select-bloc">
+    <div class="periods-container">
+      <div
+        (click)="updateTime('today')"
+        class="period"
+        [ngClass]="{ 'selected-period': selectedTime === 'today' }"
+      >
+        <h3>Today</h3>
+      </div>
+      <div
+        (click)="updateTime('week')"
+        class="period"
+        [ngClass]="{ 'selected-period': selectedTime === 'week' }"
+      >
+        <h3>Week</h3>
+      </div>
+      <div
+        (click)="updateTime('month')"
+        class="period"
+        [ngClass]="{ 'selected-period': selectedTime === 'month' }"
+      >
+        <h3>Month</h3>
+      </div>
     </div>
-    } }
+
+    <div class="stats-list">
+      @for(data of datas; track data){ @if(data[0] !== "date" && data[0] !==
+      "_id" && data[0] !== "device_id"){
+      <div
+        class="stat-element"
+        (click)="updateData(data[0])"
+        [ngClass]="{
+          'stat-element-selected': selectedData === data[0]
+        }"
+      >
+        <h3>{{ data[0] }}</h3>
+        <h3>{{ data[1] }} <fa-icon [icon]="icons[data[0]]" /></h3>
+      </div>
+      } }
+    </div>
   </div>
 </div>
 
-<div>
-  <div class="chart">
-    <h3 style="margin-top: 20px">
-      {{ selectedData }} : {{ selectedTime | titlecase }}
-    </h3>
-    <figure id="bar"></figure>
+<div class="chart">
+  <div class="dashboard-head-chart">
+    <h1>{{ selectedData | uppercase }} : {{ selectedTime | uppercase }}</h1>
   </div>
+  <figure id="bar"></figure>
 </div>

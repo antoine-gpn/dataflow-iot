@@ -3,11 +3,11 @@
   justify-content: space-around;
   padding-top: 10px;
 
-  /*background-image: url("/background.jpg");
+  background-image: url("/background.jpg");
   background-size: cover;
-  background-position: center;*/
-  background-color: #111a6d;
-  min-height: 100vh;
+  background-position: center;
+  //background-color: #111a6d;
+  min-height: 90vh;
 }
 
 .two-block {
@@ -20,16 +20,42 @@
 }
 
 .device-list-bloc {
-  width: 40%;
+  width: 25%;
   text-align: center;
+  //margin: auto;
 }
 
 .dashboard-bloc {
-  width: 50%;
+  width: 75%;
   text-align: center;
+  display: flex;
 }
 
-@media (max-width: 800px) {
+.footer {
+  background-color: #010834;
+  color: white;
+  text-align: center;
+  border-top: 1px solid lightgray;
+  padding: 10px;
+}
+
+@media (max-width: 1500px) {
+  .dashboard-bloc {
+    width: 80%;
+  }
+}
+
+@media (max-width: 1300px) {
+  .dashboard-bloc {
+    flex-direction: column;
+  }
+
+  .device-list-bloc {
+    width: 45%;
+  }
+}
+
+@media (max-width: 900px) {
   .body-container {
     flex-direction: column;
   }
@@ -37,5 +63,14 @@
   .two-block {
     width: 80%;
     margin: auto;
+  }
+
+  .device-list-bloc {
+    width: 90%;
+  }
+
+  .dashboard-bloc {
+    width: 100%;
+    margin-bottom: 40px;
   }
 }

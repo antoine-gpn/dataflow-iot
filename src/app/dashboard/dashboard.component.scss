@@ -1,11 +1,14 @@
 .chart {
-  width: 77%;
-  min-height: 450px;
-  background-color: #010834;
+  width: 50%;
+  min-height: 540px;
   border-radius: 10px;
   margin: auto;
-  margin-top: 30px;
-  border: solid 2px lightgray;
+  //margin-top: 90px;
+  padding: 10px;
+}
+
+h1 {
+  font-size: 1.4em;
 }
 
 .periods-container {
@@ -14,18 +17,19 @@
   margin: auto;
   margin-top: 30px;
   margin-bottom: 30px;
-  width: 50%;
+  width: 90%;
 }
 
 .period {
-  background-color: #394899;
+  background-color: #0e1f7c;
   border-radius: 8px;
   padding: 8px;
   cursor: pointer;
+  border: solid 1px lightgray;
 }
 
 .selected-period {
-  border: solid 1px lightgray;
+  border: solid 4px lightgray;
 }
 
 .stats-list {
@@ -37,22 +41,102 @@
 }
 
 .stat-element {
-  background-color: #394899;
+  background-color: #0e1f7c;
   border-radius: 8px;
-  padding: 8px;
-  margin-bottom: 20px;
+  width: 35%;
+  padding: 15px 5px 5px 0;
+  margin-bottom: 30px;
   cursor: pointer;
+  border: solid 1px lightgray;
+
+  h3 {
+    margin-bottom: 20px;
+  }
 }
 
 .stat-element-selected {
-  border: solid 1px lightgray;
+  border: solid 4px lightgray;
 }
 
 .dashboard-title {
-  border: solid 2px lightblue;
-  background-color: #010834;
-  width: 75%;
+  width: 45%;
   margin: auto;
+  //margin-top: 90px;
   border-radius: 10px;
   padding: 10px;
+}
+
+.dashboard-head {
+  border: solid 2px white;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  background-color: #010834;
+  padding: 10px;
+}
+
+.dashboard-head-chart {
+  border: solid 2px white;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  background-color: #010834;
+  padding: 10px;
+}
+
+.dashboard-select-bloc {
+  border: solid 2px white;
+  border-radius: 10px;
+  background-color: #010834;
+}
+
+figure {
+  border: solid 2px white;
+  border-radius: 10px;
+  background-color: #010834;
+}
+
+@media (max-width: 1550px) {
+  .periods-container {
+    width: 85%;
+  }
+
+  .stat-element {
+    width: 35%;
+  }
+}
+
+@media (max-width: 1300px) {
+  .dashboard-title {
+    width: 75%;
+  }
+
+  .chart {
+    width: 75%;
+  }
+}
+
+@media (max-width: 800px) {
+  .periods-container {
+    width: 85%;
+  }
+
+  .chart {
+    width: 90%;
+    min-height: 400px;
+  }
+
+  .dashboard-title {
+    width: 85%;
+  }
+}
+
+@media (max-width: 600px) {
+  .stat-element {
+    width: 40%;
+    padding: 25px 5px 5px 5px;
+    margin-bottom: 30px;
+
+    h3 {
+      margin-bottom: 20px;
+    }
+  }
 }
