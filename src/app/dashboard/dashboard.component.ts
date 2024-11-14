@@ -48,9 +48,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
   selectedTime!: string;
   selectedData!: string;
   datas!: any[];
-  chartData!: {}[];
+  chartData!: { [key: string]: number }[];
+  pieChartData: { [key: string]: any }[] = [
+    { label: 'Fat rate', value: 26 },
+    { label: 'Muscle rate', value: 70 },
+    { label: 'Other', value: 6 },
+  ];
   chartExist: boolean = false;
+  balanceData!: { [key: string]: number };
   private svg: any;
+  private pieSvg: any;
   private margin = 50;
   private width!: number;
   private height = 400;
@@ -96,6 +103,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.selectedTime
         );
         this.datas = Object.entries(allDatas);
+        console.log(this.datas);
 
         if (this.datas) {
           this.selectedData = this.datas[0][0];
@@ -106,6 +114,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.selectedData,
           this.selectedTime
         );
+
+        if (selectedDevice.deviceType === 'Smart Balance') {
+          this.chartData.forEach((data) => {
+            if (data['Time'] === 8) {
+              this.balanceData = data;
+            }
+          });
+
+          d3.select('figure#pie').select('svg').remove();
+          this.createPieSvg();
+          this.createPieChart();
+        }
 
         if (this.chartExist) {
           this.updateChartWithNewData();
@@ -130,6 +150,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.selectedTime
     );
     this.updateChartWithNewData();
+
+    if (this.selectedDevice.deviceType === 'Smart Balance') {
+      this.chartData.forEach((data) => {
+        if (data['Time'] === 8) {
+          this.balanceData = data;
+        }
+      });
+    }
   }
 
   updateTime(newTime: string) {
@@ -167,6 +195,53 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .attr('preserveAspectRatio', 'xMinYMin meet')
       .append('g')
       .attr('transform', 'translate(' + this.margin + ',' + this.margin + ')');
+  }
+
+  createPieSvg(): void {
+    this.pieSvg = d3
+      .select('figure#pie')
+      .append('svg')
+      .attr('width', this.width)
+      .attr('height', this.height)
+      .append('g')
+      .attr('transform', 'translate(' + 230 + ',' + this.height / 2 + ')');
+  }
+
+  createPieChart(): void {
+    const color = d3
+      .scaleOrdinal()
+      .domain(this.pieChartData.map((d) => d['label']))
+      .range(['#d34747', '#3c4c9e', '#a8a8a8']);
+
+    const pie = d3.pie<any>().value((d: any) => d.value);
+
+    const data_ready = pie(this.pieChartData);
+
+    const arc = d3
+      .arc()
+      .innerRadius(0)
+      .outerRadius(Math.min(this.width, this.height) / 2 - this.margin);
+
+    this.pieSvg
+      .selectAll('pieces')
+      .data(data_ready)
+      .enter()
+      .append('path')
+      .attr('d', arc)
+      .attr('fill', (d: any) => color(d.data.label))
+      .attr('stroke', '#121926')
+      .style('stroke-width', '1px');
+
+    this.pieSvg
+      .selectAll('pieces')
+      .data(data_ready)
+      .enter()
+      .append('text')
+      .text((d: any) => d.data.label)
+      .attr('transform', (d: any) => 'translate(' + arc.centroid(d) + ')')
+      .style('text-anchor', 'middle')
+      .style('font-size', 15)
+      .style('font-weight', 'bold');
   }
 
   private drawBars(data: any[]): void {

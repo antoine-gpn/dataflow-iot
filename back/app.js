@@ -50,7 +50,7 @@ const fieldsOptions = {
   "Sunshine exposure": { min: 1, max: 60, operator: "sum", unit: "min" },
   "Lightning intensity": { min: 10, max: 30, operator: "avg", unit: "lux" },
   "Time on": { min: 1, max: 60, operator: "sum", unit: "min" },
-  "Body Weight": { min: 100, max: 200, operator: "avg", unit: "kg" },
+  "Body Weight": { min: 70, max: 120, operator: "avg", unit: "kg" },
   "Body Mass Index": { min: 100, max: 200, operator: "avg", unit: "" },
   "Muscle rate": { min: 70, max: 100, operator: "avg", unit: "%" },
   "Body Water rate": { min: 70, max: 100, operator: "avg", unit: "%" },
