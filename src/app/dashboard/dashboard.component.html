@@ -51,5 +51,19 @@
   <div class="dashboard-head-chart">
     <h1>{{ selectedData | uppercase }} : {{ selectedTime | uppercase }}</h1>
   </div>
-  <figure id="bar"></figure>
+  <figure
+    id="bar"
+    [ngClass]="{
+      hide:
+        selectedDevice.deviceType === 'Smart Balance' &&
+        selectedTime === 'today'
+    }"
+  ></figure>
+  @if(selectedDevice.deviceType === "Smart Balance" && selectedTime ===
+  'today'){
+  <div class="weighting">
+    <h1>WEIGHTING OF THE DAY</h1>
+    <h1>{{ selectedData }}</h1>
+  </div>
+  }
 </div>

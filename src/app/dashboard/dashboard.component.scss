@@ -94,6 +94,18 @@ figure {
   background-color: #010834;
 }
 
+.weighting {
+  border: solid 2px white;
+  border-radius: 10px;
+  background-color: #010834;
+  padding-top: 30px;
+  min-height: 520px;
+}
+
+.hide {
+  display: none;
+}
+
 @media (max-width: 1550px) {
   .periods-container {
     width: 85%;

@@ -197,6 +197,7 @@ async function main() {
     let now = new Date();
     now.setMinutes(0, 0, 0);
     const firstTimestampHour = now.getTime();
+    const hour = now.getHours();
 
     //Récupération du dernier ID le plus élevé
     const nbDatas = await db.collection("devices-data").countDocuments();
@@ -211,25 +212,30 @@ async function main() {
       .toArray();
 
     for (const device of devices) {
-      const existingData = await datasCollection
-        .find({
-          device_id: device._id,
-          date: firstTimestampHour,
-        })
-        .toArray();
+      if (
+        device.deviceType !== "Smart Balance" ||
+        (device.deviceType === "Smart Balance" && hour == 8)
+      ) {
+        const existingData = await datasCollection
+          .find({
+            device_id: device._id,
+            date: firstTimestampHour,
+          })
+          .toArray();
 
-      if (existingData.length === 0) {
-        let obj = {
-          _id: highestId,
-          device_id: device._id,
-          date: firstTimestampHour,
-        };
-        fields[device.deviceType].forEach((field) => {
-          let min = fieldsOptions[field]["min"];
-          let max = fieldsOptions[field]["max"];
-          obj[field] = Math.floor(Math.random() * (max - min + 1)) + min;
-        });
-        objsToInsert.push(obj);
+        if (existingData.length === 0) {
+          let obj = {
+            _id: highestId,
+            device_id: device._id,
+            date: firstTimestampHour,
+          };
+          fields[device.deviceType].forEach((field) => {
+            let min = fieldsOptions[field]["min"];
+            let max = fieldsOptions[field]["max"];
+            obj[field] = Math.floor(Math.random() * (max - min + 1)) + min;
+          });
+          objsToInsert.push(obj);
+        }
       }
     }
 
@@ -377,21 +383,28 @@ async function main() {
 
       for (const timestamp of timestampsByHour) {
         let objsToInsert = [];
+        const date = new Date(timestamp);
+        const hour = date.getHours();
 
         if (!allStamps.includes(timestamp)) {
           for (const device of devices) {
-            let obj = {
-              _id: highestId,
-              device_id: device._id,
-              date: timestamp,
-            };
-            fields[device.deviceType].forEach((field) => {
-              let min = fieldsOptions[field]["min"];
-              let max = fieldsOptions[field]["max"];
-              obj[field] = Math.floor(Math.random() * (max - min + 1)) + min;
-            });
-            objsToInsert.push(obj);
-            highestId += 1;
+            if (
+              device.deviceType !== "Smart Balance" ||
+              (device.deviceType === "Smart Balance" && hour == 8)
+            ) {
+              let obj = {
+                _id: highestId,
+                device_id: device._id,
+                date: timestamp,
+              };
+              fields[device.deviceType].forEach((field) => {
+                let min = fieldsOptions[field]["min"];
+                let max = fieldsOptions[field]["max"];
+                obj[field] = Math.floor(Math.random() * (max - min + 1)) + min;
+              });
+              objsToInsert.push(obj);
+              highestId += 1;
+            }
           }
         }
 
