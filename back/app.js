@@ -58,6 +58,8 @@ const fieldsOptions = {
   "Body Age": { min: 20, max: 30, operator: "avg", unit: "years" },
 };
 
+const nightPause = ["Steps walked, Distance traveled", "Floors climbed"];
+
 const fields = {
   SmartWatch: [
     "Steps walked",
@@ -230,9 +232,13 @@ async function main() {
             date: firstTimestampHour,
           };
           fields[device.deviceType].forEach((field) => {
-            let min = fieldsOptions[field]["min"];
-            let max = fieldsOptions[field]["max"];
-            obj[field] = Math.floor(Math.random() * (max - min + 1)) + min;
+            if (nightPause.includes(field) && hour < 8) {
+              obj[field] = 0;
+            } else {
+              let min = fieldsOptions[field]["min"];
+              let max = fieldsOptions[field]["max"];
+              obj[field] = Math.floor(Math.random() * (max - min + 1)) + min;
+            }
           });
           objsToInsert.push(obj);
         }
@@ -387,6 +393,8 @@ async function main() {
         const hour = date.getHours();
 
         if (!allStamps.includes(timestamp)) {
+          const stampDate = new Date(timestamp);
+          const hour = stampDate.getHours();
           for (const device of devices) {
             if (
               device.deviceType !== "Smart Balance" ||
@@ -398,9 +406,14 @@ async function main() {
                 date: timestamp,
               };
               fields[device.deviceType].forEach((field) => {
-                let min = fieldsOptions[field]["min"];
-                let max = fieldsOptions[field]["max"];
-                obj[field] = Math.floor(Math.random() * (max - min + 1)) + min;
+                if (nightPause.includes(field) && hour < 8) {
+                  obj[field] = 0;
+                } else {
+                  let min = fieldsOptions[field]["min"];
+                  let max = fieldsOptions[field]["max"];
+                  obj[field] =
+                    Math.floor(Math.random() * (max - min + 1)) + min;
+                }
               });
               objsToInsert.push(obj);
               highestId += 1;
