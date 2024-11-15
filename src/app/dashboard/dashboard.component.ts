@@ -49,11 +49,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   selectedData!: string;
   datas!: any[];
   chartData!: { [key: string]: number }[];
-  pieChartData: { [key: string]: any }[] = [
-    { label: 'Fat rate', value: 26 },
-    { label: 'Muscle rate', value: 70 },
-    { label: 'Other', value: 6 },
-  ];
+  pieChartData: { [key: string]: any }[] = [];
   chartExist: boolean = false;
   balanceData!: { [key: string]: number };
   private svg: any;
@@ -117,11 +113,26 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
         if (selectedDevice.deviceType === 'Smart Balance') {
           this.chartData.forEach((data) => {
-            if (data['Time'] === 8) {
+            if (data['Time'] === 9) {
               this.balanceData = data;
             }
           });
 
+          let fatRate = this.datas.find(
+            (data) => data[0] === 'Bodyfat rate'
+          )[1];
+          let muscleRate = this.datas.find(
+            (data) => data[0] === 'Muscle rate'
+          )[1];
+
+          muscleRate = muscleRate.replace(/\D/g, '');
+          fatRate = fatRate.replace(/\D/g, '');
+
+          this.pieChartData = [
+            { label: 'Fat', value: fatRate },
+            { label: 'Muscle', value: muscleRate },
+            { label: 'Other', value: 6 },
+          ];
           d3.select('figure#pie').select('svg').remove();
           this.createPieSvg();
           this.createPieChart();
@@ -237,7 +248,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .data(data_ready)
       .enter()
       .append('text')
-      .text((d: any) => d.data.label)
+      .text((d: any) => d.data.label + ' ' + d.data.value + ' %')
       .attr('transform', (d: any) => 'translate(' + arc.centroid(d) + ')')
       .style('text-anchor', 'middle')
       .style('font-size', 15)
