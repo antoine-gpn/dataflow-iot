@@ -20,7 +20,7 @@ export class DevicesService {
   private selectedTime: string = 'today';
   private selectedData: string = 'Number of steps';
   //private baseUrl = 'http://localhost:8001/';
-  private baseUrl = 'https://dataflow-iot.onrender.com/';
+  private baseUrl = 'https://dataflowiot.onrender.com';
 
   getSelectedDevice(): Observable<Device> {
     return this.selectedDevice.asObservable();
